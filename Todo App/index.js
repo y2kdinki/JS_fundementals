@@ -6,14 +6,39 @@ const todoList = document.querySelector(".todoList");
 const deleteAllBtn = document.querySelector(".footer button");
 
 //onkeyup event 
-inputBox.onkeyup = () => {
+inputBox.onkeyup = (event) => {
     let userEnteredValue = inputBox.value; //getting user entered value
-    if (userEnteredValue.trim() != 0) {
+
+    // Check if 'Enter' key is pressed and input is not empty
+    if (event.key === "Enter" && userEnteredValue.trim() !== "") {
+        addTask(); // Function to add the task
+        return; // Prevent further processing
+    }
+
+    // Button activation logic
+    if (userEnteredValue.trim() !== "") {
         addBtn.classList.add("active");
     } else {
         addBtn.classList.remove("active");
     }
 };
+
+function addTask() {
+    let userEnteredValue = inputBox.value;
+    let getLocalStorageData = localStorage.getItem("New Todo");
+    let listArray = getLocalStorageData ? JSON.parse(getLocalStorageData) : [];
+
+    listArray.push(userEnteredValue); // Push new entry
+    localStorage.setItem("New Todo", JSON.stringify(listArray)); // Save to local storage
+    showTasks(); // Update the UI with new tasks
+    inputBox.value = ""; // Clear input box
+    addBtn.classList.remove("active"); // Deactivate add button
+}
+
+// Bind the addTask function to add button's onclick event
+addBtn.onclick = addTask;
+
+
 
 showTasks(); //calling showTask function
 
